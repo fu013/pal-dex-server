@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
+import java.util.Optional;
 import java.util.List;
 
 @Service
@@ -29,6 +31,17 @@ public class PostService {
         String content = postDTO.getContent();
         PostEntity postEntity = new PostEntity(title,content);
         postRepository.save(postEntity);
+    }
+
+    @Transactional
+    public ResponseEntity<List<PostEntity>> getPostById(Long pk) {
+        Optional<PostEntity> postOptional = postRepository.findById(pk);
+        if (postOptional.isPresent()) {
+            List<PostEntity> postList = Collections.singletonList(postOptional.get());
+            return ResponseEntity.ok(postList);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
     @Transactional
     public ResponseEntity<List<PostEntity>> getAllPosts() {

@@ -24,10 +24,15 @@ public class PostController {
         this.postService = postService;
     }
 
+    @GetMapping("")
+    public ResponseEntity<List<PostEntity>> getPost(@RequestParam("id") long id) {
+        return postService.getPostById(id);
+    }
     @GetMapping("/all")
     public ResponseEntity<List<PostEntity>> getAllPost() {
         return postService.getAllPosts();
     }
+
     @PostMapping("/set")
     public ResponseEntity<String> createPost(@RequestBody PostDTO postDTO) {
         try {
