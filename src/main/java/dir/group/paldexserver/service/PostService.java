@@ -29,7 +29,9 @@ public class PostService {
     public void savePostWithTransaction(PostDTO postDTO) {
         String title = postDTO.getTitle();
         String content = postDTO.getContent();
-        PostEntity postEntity = new PostEntity(title,content);
+        String description = postDTO.getDescription();
+        String tags = postDTO.getTags();
+        PostEntity postEntity = new PostEntity(title,content,description,tags);
         postRepository.save(postEntity);
     }
 
