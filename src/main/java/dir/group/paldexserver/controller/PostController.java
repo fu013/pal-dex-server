@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -42,4 +43,17 @@ public class PostController {
             return new ResponseEntity<>("Error creating post: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/addImage")
+    public ResponseEntity<?> addImage(@RequestParam("img") List<MultipartFile> files) {
+        try {
+            logger.info("Received {} file(s) for upload", files.size());
+            postService.storeFiles(files);
+            return new ResponseEntity<>("Image(s) uploaded successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Error uploading image: {}", e.getMessage(), e);
+            return new ResponseEntity<>("Error uploading image: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
