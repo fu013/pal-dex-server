@@ -5,7 +5,7 @@ import lombok.Builder;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "images")
+@Table(name = "file")
 public class FileEntity {
 
     @Id
@@ -25,7 +25,7 @@ public class FileEntity {
     private String ext;
 
     @Column(name = "size", nullable = false)
-    private int size;
+    private long size;
 
     @Column(name = "is_thumb")
     private Character is_thumb;
@@ -40,7 +40,7 @@ public class FileEntity {
     private LocalDateTime createdDate;
 
     @Builder
-    public FileEntity(String t_name, Long t_pk, String path, String ext, Integer size, Character is_thumb) {
+    public FileEntity(String t_name, Long t_pk, String path, String ext, long size, Character is_thumb) {
         this.t_name = t_name;
         this.t_pk = t_pk;
         this.path = path;

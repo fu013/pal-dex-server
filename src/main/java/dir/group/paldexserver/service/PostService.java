@@ -1,8 +1,8 @@
 package dir.group.paldexserver.service;
 
 import dir.group.paldexserver.dto.PostDTO;
-import dir.group.paldexserver.entity.PostEntity;
 import dir.group.paldexserver.entity.FileEntity;
+import dir.group.paldexserver.entity.PostEntity;
 import dir.group.paldexserver.repository.FileRepository;
 import dir.group.paldexserver.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,35 +19,56 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Service
 public class PostService {
 
     private final PostRepository postRepository;
+    private final FileRepository fileRepository;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final Environment env;
 
     @Autowired
-    public PostService(PostRepository postRepository, Environment env) {
+    public PostService(PostRepository postRepository, FileRepository fileRepository, Environment env) {
         this.postRepository = postRepository;
+        this.fileRepository = fileRepository;
         this.env = env;
     }
 
     @Transactional
-    public void savePostWithTransaction(PostDTO postDTO) {
+    public void savePostWithTransaction(PostDTO postDTO) throws IOException {
         String title = postDTO.getTitle();
         String content = postDTO.getContent();
         String description = postDTO.getDescription();
         String tags = postDTO.getTags();
         List<String> imageArr = postDTO.getImageArr();
-        logger.info("Received Post Image(s): {}", imageArr);
         PostEntity postEntity = new PostEntity(title,content,description,tags);
         postRepository.save(postEntity);
+        Long generatedPK = postEntity.getPk();
+        for (String imagePath : imageArr) {
+            Path filePath = Path.of(imagePath);
+            if (Files.exists(filePath)) {
+                long size = Files.size(filePath);
+                String ext = getFileExtension(imagePath);
+                FileEntity fileEntity = new FileEntity("post",generatedPK, imagePath, ext, size, (char) 0);
+                fileRepository.save(fileEntity);
+            } else {
+                throw new IOException("File not found: " + imagePath);
+            }
+        }
+    }
+
+    private static String getFileExtension(String fileName) {
+        int lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex >= 0) {
+            return fileName.substring(lastDotIndex + 1);
+        }
+        return "";
     }
 
     @Transactional
