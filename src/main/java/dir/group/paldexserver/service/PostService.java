@@ -6,6 +6,7 @@ import dir.group.paldexserver.entity.PostEntity;
 import dir.group.paldexserver.repository.FileRepository;
 import dir.group.paldexserver.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ import java.nio.file.Path;
 @Service
 public class PostService {
 
+    @Value("${user.dir}/uploads") // 임시 이미지 경로
+    private String uploadPath;
+
     private final PostRepository postRepository;
     private final FileRepository fileRepository;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -42,24 +46,33 @@ public class PostService {
 
     @Transactional
     public void savePostWithTransaction(PostDTO postDTO) throws IOException {
-        String title = postDTO.getTitle();
-        String content = postDTO.getContent();
-        String description = postDTO.getDescription();
-        String tags = postDTO.getTags();
-        List<String> imageArr = postDTO.getImageArr();
-        PostEntity postEntity = new PostEntity(title,content,description,tags);
-        postRepository.save(postEntity);
-        Long generatedPK = postEntity.getPk();
-        for (String imagePath : imageArr) {
-            Path filePath = Path.of(imagePath);
-            if (Files.exists(filePath)) {
-                long size = Files.size(filePath);
-                String ext = getFileExtension(imagePath);
-                FileEntity fileEntity = new FileEntity("post",generatedPK, imagePath, ext, size, (char) 0);
-                fileRepository.save(fileEntity);
-            } else {
-                throw new IOException("File not found: " + imagePath);
+        try {
+            String title = postDTO.getTitle();
+            String content = postDTO.getContent();
+            String description = postDTO.getDescription();
+            String tags = postDTO.getTags();
+            List<String> imageArr = postDTO.getImageArr();
+            PostEntity postEntity = new PostEntity(title,content,description,tags);
+            postRepository.save(postEntity);
+            Long generatedPK = postEntity.getPk();
+
+            for (String imagePath : imageArr) {
+                String dirImagePath = uploadPath + "/" + imagePath;
+                Path filePath = Path.of(dirImagePath);
+                if (Files.exists(filePath) && generatedPK > 0) {
+                    long size = Files.size(filePath);
+                    String ext = getFileExtension(dirImagePath);
+                    FileEntity fileEntity =
+                            new FileEntity("post",
+                                    generatedPK, dirImagePath, ext,size, "0");
+                    fileRepository.save(fileEntity);
+                } else {
+                    throw new IOException("File not found: " + dirImagePath);
+                }
             }
+        } catch (IOException e) {
+            logger.error("Error processing file: {}", e.getMessage(), e);
+            throw new IOException("Error processing file: " + e.getMessage());
         }
     }
 

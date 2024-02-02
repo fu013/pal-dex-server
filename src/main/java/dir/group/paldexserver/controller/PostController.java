@@ -52,7 +52,6 @@ public class PostController {
     @PostMapping("/addImage")
     public ResponseEntity<List<String>> addImage(@RequestParam("img") List<MultipartFile> files) {
         try {
-            logger.info("Received {} file(s) for upload", files.size());
             List<String> uploadedFileNames = postService.storeFiles(files);
             return new ResponseEntity<>(uploadedFileNames, HttpStatus.OK);
         } catch (Exception e) {

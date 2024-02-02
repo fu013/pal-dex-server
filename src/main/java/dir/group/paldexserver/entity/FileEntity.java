@@ -27,8 +27,8 @@ public class FileEntity {
     @Column(name = "size", nullable = false)
     private long size;
 
-    @Column(name = "is_thumb")
-    private Character is_thumb;
+    @Column(name = "is_thumb", length = 1)
+    private String is_thumb;
 
     @Column(name = "comment")
     private String comment;
@@ -40,7 +40,7 @@ public class FileEntity {
     private LocalDateTime createdDate;
 
     @Builder
-    public FileEntity(String t_name, Long t_pk, String path, String ext, long size, Character is_thumb) {
+    public FileEntity(String t_name,Long t_pk,String path,String ext,long size,String is_thumb) {
         this.t_name = t_name;
         this.t_pk = t_pk;
         this.path = path;
