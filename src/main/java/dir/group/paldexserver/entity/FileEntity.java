@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "file")
+@Table(name = "images")
 public class FileEntity {
 
     @Id

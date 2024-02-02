@@ -89,7 +89,7 @@ public class PostService {
 
     private String generateUniqueFileName(String originalFilename) {
             if (originalFilename == null || originalFilename.isEmpty()) {
-                originalFilename = "file";
+                originalFilename = "images";
             }
             String timestamp = String.valueOf(Instant.now().toEpochMilli());
             String randomPart = UUID.randomUUID().toString().substring(0, 8);

@@ -1,10 +1,23 @@
 package dir.group.paldexserver.config;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+    @Value("file:${user.dir}/uploads")
+    private String uploadPath;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public void logUploadPath() {
+        logger.info("Upload path: " + uploadPath);
+    }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -16,5 +29,12 @@ public class WebConfig implements WebMvcConfigurer {
                 .exposedHeaders("Custom-Header")
                 .allowCredentials(true)
                 .maxAge(3600);
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+                .addResourceHandler("/**")
+                .addResourceLocations(uploadPath);
     }
 }
