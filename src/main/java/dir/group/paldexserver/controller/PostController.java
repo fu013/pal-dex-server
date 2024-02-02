@@ -6,23 +6,28 @@ import dir.group.paldexserver.service.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
 @RequestMapping("/post")
 public class PostController {
 
+    private final Environment env;
     private final PostService postService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService, Environment env) {
         this.postService = postService;
+        this.env = env;
     }
 
     @GetMapping("")
@@ -45,15 +50,40 @@ public class PostController {
     }
 
     @PostMapping("/addImage")
-    public ResponseEntity<?> addImage(@RequestParam("img") List<MultipartFile> files) {
+    public ResponseEntity<List<String>> addImage(@RequestParam("img") List<MultipartFile> files) {
         try {
             logger.info("Received {} file(s) for upload", files.size());
-            postService.storeFiles(files);
-            return new ResponseEntity<>("Image(s) uploaded successfully", HttpStatus.OK);
+            List<String> uploadedFileNames = postService.storeFiles(files);
+            return new ResponseEntity<>(uploadedFileNames, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Error uploading image: {}", e.getMessage(), e);
-            return new ResponseEntity<>("Error uploading image: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(Collections.emptyList(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @DeleteMapping("/delImage")
+    public ResponseEntity<String> delImage(@RequestParam List<String> filenames) {
+        String uploadFolderPath = env.getProperty("server.uploadPath");;
+        try {
+            for (String filename : filenames) {
+                logger.info("Received {} file(s) for Removing",filename);
+                String filePath = uploadFolderPath + File.separator + filename;
+
+                File file = new File(filePath);
+
+                if (file.exists()) {
+                    if (file.delete()) {
+                        logger.info("File deleted successfully: " + filename);
+                    } else {
+                        logger.info("Failed to delete file: " + filename);
+                    }
+                } else {
+                    logger.info("File not found: " + filename);
+                }
+            }
+            return new ResponseEntity<>("Images deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error deleting images: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

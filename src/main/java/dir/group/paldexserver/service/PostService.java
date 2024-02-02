@@ -2,6 +2,8 @@ package dir.group.paldexserver.service;
 
 import dir.group.paldexserver.dto.PostDTO;
 import dir.group.paldexserver.entity.PostEntity;
+import dir.group.paldexserver.entity.FileEntity;
+import dir.group.paldexserver.repository.FileRepository;
 import dir.group.paldexserver.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -16,15 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.StandardCopyOption;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.List;
+import java.util.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.UUID;
 
 @Service
 public class PostService {
@@ -46,6 +44,8 @@ public class PostService {
         String content = postDTO.getContent();
         String description = postDTO.getDescription();
         String tags = postDTO.getTags();
+        List<String> imageArr = postDTO.getImageArr();
+        logger.info("Received Post Image(s): {}", imageArr);
         PostEntity postEntity = new PostEntity(title,content,description,tags);
         postRepository.save(postEntity);
     }
@@ -66,7 +66,8 @@ public class PostService {
         return ResponseEntity.ok(posts);
     }
 
-    public void storeFiles(List<MultipartFile> files) throws Exception {
+    public List<String> storeFiles(List<MultipartFile> files) throws Exception {
+        List<String> fileNames = new ArrayList<>();
         for (MultipartFile file : files) {
             String originalFilename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
             String fileName = generateUniqueFileName(originalFilename);
@@ -80,12 +81,12 @@ public class PostService {
                     throw new IOException("Failed to create directories: " + uploadPath.getAbsolutePath());
                 }
             }
-
             Path filePath = Paths.get(uploadDir, fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            fileNames.add(fileName);
         }
+        return fileNames;
     }
-
 
     private String generateUniqueFileName(String originalFilename) {
             if (originalFilename == null || originalFilename.isEmpty()) {

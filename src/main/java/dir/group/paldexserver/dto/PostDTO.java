@@ -2,6 +2,8 @@ package dir.group.paldexserver.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @Getter
 @Setter
@@ -11,4 +13,5 @@ public class PostDTO {
     private String content;
     private String description;
     private String tags;
+    private List<String> imageArr;
 }
