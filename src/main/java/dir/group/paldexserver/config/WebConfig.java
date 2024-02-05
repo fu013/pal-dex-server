@@ -10,8 +10,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     @Value("file:${user.dir}/uploads") // 임시 이미지 경로
     private String uploadPath;
-
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         // CORS Setting
