@@ -85,4 +85,13 @@ public class PostController {
             return new ResponseEntity<>("Error deleting images: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @PostMapping("/update")
+    public ResponseEntity<String> updatePost(@RequestBody PostDTO postDTO) {
+        try {
+            postService.savePostWithTransaction(postDTO);
+            return new ResponseEntity<>("Post created successfully", HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error creating post: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
