@@ -10,7 +10,8 @@ import java.util.List;
 @AllArgsConstructor
 public class PostDTO {
     private String title;
-    private String content;
+    private String html;
+    private String markdown;
     private String description;
     private String tags;
     private List<String> imageArr;

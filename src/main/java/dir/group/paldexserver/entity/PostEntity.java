@@ -21,8 +21,11 @@ public class PostEntity {
     @Column(name = "title", length = 255)
     private String title;
 
-    @Column(name = "content", columnDefinition = "TEXT")
-    private String content;
+    @Column(name = "html", columnDefinition = "TEXT")
+    private String html;
+
+    @Column(name = "markdown", columnDefinition = "TEXT")
+    private String markdown;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
@@ -46,9 +49,10 @@ public class PostEntity {
     private LocalDateTime createdDate;
 
     @Builder
-    public PostEntity(String title, String content, String description, String tags) {
+    public PostEntity(String title, String html, String markdown, String description, String tags) {
         this.title = title;
-        this.content = content;
+        this.html = html;
+        this.markdown = markdown;
         this.description = description;
         this.tags = tags;
         this.isPublic = "1";

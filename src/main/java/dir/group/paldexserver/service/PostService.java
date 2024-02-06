@@ -48,11 +48,12 @@ public class PostService {
     public void savePostWithTransaction(PostDTO postDTO) throws IOException {
         try {
             String title = postDTO.getTitle();
-            String content = postDTO.getContent();
+            String html = postDTO.getHtml();
+            String markdown = postDTO.getMarkdown();
             String description = postDTO.getDescription();
             String tags = postDTO.getTags();
             List<String> imageArr = postDTO.getImageArr();
-            PostEntity postEntity = new PostEntity(title,content,description,tags);
+            PostEntity postEntity = new PostEntity(title,html,markdown,description,tags);
             postRepository.save(postEntity);
             Long generatedPK = postEntity.getPk();
 
