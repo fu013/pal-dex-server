@@ -1,5 +1,6 @@
 package dir.group.paldexserver.service;
 
+import dir.group.paldexserver.bean.ImgBean;
 import dir.group.paldexserver.dto.PostDTO;
 import dir.group.paldexserver.entity.FileEntity;
 import dir.group.paldexserver.entity.PostEntity;
@@ -24,6 +25,8 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class PostService {
@@ -52,20 +55,29 @@ public class PostService {
             String markdown = postDTO.getMarkdown();
             String description = postDTO.getDescription();
             String tags = postDTO.getTags();
-            List<String> imageArr = postDTO.getImageArr();
+            String imageArr = postDTO.getImageArr();
             PostEntity postEntity = new PostEntity(title,html,markdown,description,tags);
             postRepository.save(postEntity);
             Long generatedPK = postEntity.getPk();
 
-            for (String imagePath : imageArr) {
-                String dirImagePath = uploadPath + "/" + imagePath;
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            ImgBean[] imgBean =
+                    objectMapper.readValue(imageArr, ImgBean[].class);
+
+            for (ImgBean obj : imgBean) {
+                String dirImagePath =
+                        uploadPath + "/" + obj.getUrl();
+
                 Path filePath = Path.of(dirImagePath);
                 if (Files.exists(filePath) && generatedPK > 0) {
                     long size = Files.size(filePath);
                     String ext = getFileExtension(dirImagePath);
                     FileEntity fileEntity =
                             new FileEntity("post",
-                                    generatedPK, dirImagePath, ext,size, "0");
+                                    generatedPK,
+                                    dirImagePath, ext,
+                                    size, obj.getIsThumbnail());
                     fileRepository.save(fileEntity);
                 } else {
                     throw new IOException("File not found: " + dirImagePath);

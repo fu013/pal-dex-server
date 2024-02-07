@@ -14,5 +14,5 @@ public class PostDTO {
     private String markdown;
     private String description;
     private String tags;
-    private List<String> imageArr;
+    private String imageArr;
 }

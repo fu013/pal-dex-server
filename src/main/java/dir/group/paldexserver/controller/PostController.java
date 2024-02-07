@@ -82,7 +82,7 @@ public class PostController {
                         logger.info("Failed to delete file: " + filename);
                     }
                 } else {
-                    logger.info("File not found: " + filename);
+                    logger.info("File not found: " + filePath);
                 }
             }
             return new ResponseEntity<>("Images deleted successfully", HttpStatus.OK);
