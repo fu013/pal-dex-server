@@ -96,6 +96,16 @@ public class PostService {
         }
     }
     @Transactional
+    public ResponseEntity<List<PostEntity>> getPostsByTag(String tag) {
+        List<PostEntity> postList = postRepository.findByTag(tag);
+        if (!postList.isEmpty()) {
+            return ResponseEntity.ok(postList);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Transactional
     public ResponseEntity<List<PostEntity>> getAllPosts() {
         List<PostEntity> posts = postRepository.findAll();
         return ResponseEntity.ok(posts);

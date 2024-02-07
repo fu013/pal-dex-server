@@ -33,7 +33,12 @@ public class PostController {
     @GetMapping("")
     public ResponseEntity<List<PostEntity>> getPost(@RequestParam("id") long id) {
         return postService.getPostById(id);
-    }g
+    }
+
+    @GetMapping("/tag")
+    public ResponseEntity<List<PostEntity>> getPostsByTag(@RequestParam("id") String tag) {
+        return postService.getPostsByTag(tag);
+    }
     @GetMapping("/all")
     public ResponseEntity<List<PostEntity>> getAllPost() {
         return postService.getAllPosts();
