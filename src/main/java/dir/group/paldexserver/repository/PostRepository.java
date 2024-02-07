@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<PostEntity, Long> {
 
-    @Query(value = "SELECT * FROM post WHERE FIND_IN_SET(:tag, REPLACE(tags, ', ', ',')) > 0", nativeQuery = true)
+    @Query(value = "SELECT p.*, f.path as path FROM post p JOIN file f ON p.pk = f.t_pk AND f.t_name = 'post' WHERE FIND_IN_SET(:tag, REPLACE(p.tags, ', ', ',')) > 0", nativeQuery = true)
     List<PostEntity> findByTag(@Param("tag") String tag);
 }

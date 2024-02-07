@@ -68,7 +68,6 @@ public class PostService {
             for (ImgBean obj : imgBean) {
                 String dirImagePath =
                         uploadPath + "/" + obj.getUrl();
-
                 Path filePath = Path.of(dirImagePath);
                 if (Files.exists(filePath) && generatedPK > 0) {
                     long size = Files.size(filePath);
