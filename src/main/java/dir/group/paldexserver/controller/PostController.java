@@ -2,6 +2,7 @@ package dir.group.paldexserver.controller;
 
 import dir.group.paldexserver.dto.PostDTO;
 import dir.group.paldexserver.entity.PostEntity;
+import dir.group.paldexserver.interfaces.PostWithFilePathProjection;
 import dir.group.paldexserver.service.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +37,12 @@ public class PostController {
     }
 
     @GetMapping("/tag")
-    public ResponseEntity<List<PostEntity>> getPostsByTag(@RequestParam("id") String tag) {
+    public ResponseEntity<List<PostWithFilePathProjection>> getPostsByTag(@RequestParam("id") String tag) {
         return postService.getPostsByTag(tag);
     }
+
     @GetMapping("/all")
-    public ResponseEntity<List<PostEntity>> getAllPost() {
+    public ResponseEntity<List<PostWithFilePathProjection>> getAllPost() {
         return postService.getAllPosts();
     }
 

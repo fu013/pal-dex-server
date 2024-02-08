@@ -4,6 +4,7 @@ import dir.group.paldexserver.bean.ImgBean;
 import dir.group.paldexserver.dto.PostDTO;
 import dir.group.paldexserver.entity.FileEntity;
 import dir.group.paldexserver.entity.PostEntity;
+import dir.group.paldexserver.interfaces.PostWithFilePathProjection;
 import dir.group.paldexserver.repository.FileRepository;
 import dir.group.paldexserver.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,21 +108,23 @@ public class PostService {
         }
     }
     @Transactional
-    public ResponseEntity<List<PostEntity>> getPostsByTag(String tag) {
-        List<PostEntity> postList = postRepository.findByTag(tag);
+    public ResponseEntity<List<PostWithFilePathProjection>> getPostsByTag(String tag) {
+        List<PostWithFilePathProjection> postList = postRepository.findByTag(tag);
         if (!postList.isEmpty()) {
             return ResponseEntity.ok(postList);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
-
     @Transactional
-    public ResponseEntity<List<PostEntity>> getAllPosts() {
-        List<PostEntity> posts = postRepository.findAll();
-        return ResponseEntity.ok(posts);
+    public ResponseEntity<List<PostWithFilePathProjection>> getAllPosts() {
+        List<PostWithFilePathProjection> posts = postRepository.findAllPosts();
+        if (!posts.isEmpty()) {
+            return ResponseEntity.ok(posts);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
-
     public List<String> storeFiles(List<MultipartFile> files) throws Exception {
         List<String> fileNames = new ArrayList<>();
         for (MultipartFile file : files) {

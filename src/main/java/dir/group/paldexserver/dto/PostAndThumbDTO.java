@@ -1,7 +1,14 @@
 package dir.group.paldexserver.dto;
 
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PostAndThumbDTO {
     private Long pk;
     private String title;
@@ -13,6 +20,4 @@ public class PostAndThumbDTO {
     private String isReview;
     private String comment;
     private String path;
-    private LocalDateTime updatedDate;
-    private LocalDateTime createdDate;
 }
