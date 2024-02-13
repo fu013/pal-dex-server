@@ -2,22 +2,18 @@ version: '3'
 
 services:
   database:
-    container_name: mysql-vegiedo
-    image: mysql:8.0.30
+    container_name: mysql_db
+    image: mysql
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: pal_dex
       MYSQL_ROOT_HOST: '%'
       MYSQL_ROOT_PASSWORD: tmdcks2416@
-      TZ: 'Asia/Seoul'
     ports:
       - "3306:3306"
     volumes:
       - ./mysql/conf.d:/etc/mysql/conf.d # MySQL 설정 파일 위치
-    command:
-      - "mysqld"
-      - "--character-set-server=utf8mb4"
-      - "--collation-server=utf8mb4_unicode_ci"
+    command: ["--character-set-server=utf8mb4","--collation-server=utf8mb4_unicode_ci"]
     networks:
       - sclee_network
 
@@ -30,7 +26,7 @@ services:
     ports:
       - "2417:2417"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_db:3306/users_db?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/pal_dex?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: "root"
       SPRING_DATASOURCE_PASSWORD: "tmdcks2416@"
     depends_on:
