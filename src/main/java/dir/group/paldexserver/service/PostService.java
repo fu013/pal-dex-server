@@ -119,6 +119,7 @@ public class PostService {
     @Transactional
     public ResponseEntity<List<PostWithFilePathProjection>> getAllPosts() {
         List<PostWithFilePathProjection> posts = postRepository.findAllPosts();
+        logger.info("Error processing posts: {}", posts);
         if (!posts.isEmpty()) {
             return ResponseEntity.ok(posts);
         } else {
