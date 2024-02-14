@@ -17,7 +17,7 @@ services:
       - sclee_network
 
   application:
-    container_name: docker-compose-test
+    container_name: sclee-sev
     restart: on-failure
     build:
       context: ./

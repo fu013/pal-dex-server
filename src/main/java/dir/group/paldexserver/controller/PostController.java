@@ -12,11 +12,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import lombok.extern.slf4j.Slf4j;
+
 
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+
+@Slf4j
 @RestController
 @RequestMapping("/post")
 public class PostController {
@@ -43,6 +47,7 @@ public class PostController {
 
     @GetMapping("/all")
     public ResponseEntity<List<PostWithFilePathProjection>> getAllPost() {
+        log.error("===================================================");
         return postService.getAllPosts();
     }
 
@@ -72,14 +77,14 @@ public class PostController {
         String uploadFolderPath = env.getProperty("server.uploadPath");;
         try {
             for (String filename : filenames) {
-                logger.info("Received {} file(s) for Removing",filename);
+                logger.info("Received ============ {} file(s) for Removing",filename);
                 String filePath = uploadFolderPath + File.separator + filename;
 
                 File file = new File(filePath);
 
                 if (file.exists()) {
                     if (file.delete()) {
-                        logger.info("File deleted successfully: " + filename);
+                        logger.info("File deleted successfully============== " + filename);
                     } else {
                         logger.info("Failed to delete file: " + filename);
                     }

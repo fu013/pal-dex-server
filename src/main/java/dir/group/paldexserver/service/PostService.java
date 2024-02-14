@@ -119,7 +119,8 @@ public class PostService {
     @Transactional
     public ResponseEntity<List<PostWithFilePathProjection>> getAllPosts() {
         List<PostWithFilePathProjection> posts = postRepository.findAllPosts();
-        logger.info("log posts: {}", posts);
+        logger.info("log upload path: {}", uploadPath);
+	logger.info("log posts: {}", posts);
         if (!posts.isEmpty()) {
             return ResponseEntity.ok(posts);
         } else {
