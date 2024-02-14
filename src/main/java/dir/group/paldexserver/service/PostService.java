@@ -119,7 +119,7 @@ public class PostService {
     @Transactional
     public ResponseEntity<List<PostWithFilePathProjection>> getAllPosts() {
         List<PostWithFilePathProjection> posts = postRepository.findAllPosts();
-        logger.info("Error processing posts: {}", posts);
+        logger.info("log posts: {}", posts);
         if (!posts.isEmpty()) {
             return ResponseEntity.ok(posts);
         } else {
@@ -128,6 +128,7 @@ public class PostService {
     }
     public List<String> storeFiles(List<MultipartFile> files) throws Exception {
         List<String> fileNames = new ArrayList<>();
+        logger.info("log files: {}", files);
         for (MultipartFile file : files) {
             String originalFilename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
             String fileName = generateUniqueFileName(originalFilename);
