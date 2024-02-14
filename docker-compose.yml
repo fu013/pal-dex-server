@@ -26,8 +26,10 @@ services:
       - "2417:2417"
     environment:
       SPRING_DATASOURCE_URL:
-        jdbc:mysql://host.docker
-        .internal:6000/pal_dex?useSSL=false&useUnicode=true&autoReconnect=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+        jdbc:mysql://host.docker.internal:6000/pal_dex?useSSL=false
+        &useUnicode=true&autoReconnect=true
+        &serverTimezone=Asia/Seoul
+        &allowPublicKeyRetrieval=true&autoReconnect=true
       SPRING_DATASOURCE_USERNAME: "root"
       SPRING_DATASOURCE_PASSWORD: "tmdcks2416@"
     depends_on:
