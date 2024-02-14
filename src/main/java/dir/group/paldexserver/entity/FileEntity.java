@@ -39,6 +39,8 @@ public class FileEntity {
     @Column(name = "created_date", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdDate;
 
+
+    public FileEntity() {}
     @Builder
     public FileEntity(String t_name,Long t_pk,String path,String ext,long size,String is_thumb) {
         this.t_name = t_name;
