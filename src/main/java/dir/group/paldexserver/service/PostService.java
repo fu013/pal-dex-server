@@ -31,10 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class PostService {
-
-    // /home/sclee-blog-server/uploads
-    // ${user.dir}/uploads
-    @Value("${user.dir}/uploads") // 임시 이미지 경로
+    @Value("${server.config.uploadPath}") // 임시 이미지 경로
     private String uploadPath;
 
     private final PostRepository postRepository;

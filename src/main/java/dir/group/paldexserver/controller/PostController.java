@@ -47,7 +47,6 @@ public class PostController {
 
     @GetMapping("/all")
     public ResponseEntity<List<PostWithFilePathProjection>> getAllPost() {
-        log.error("===================================================");
         return postService.getAllPosts();
     }
 
@@ -77,14 +76,13 @@ public class PostController {
         String uploadFolderPath = env.getProperty("server.uploadPath");;
         try {
             for (String filename : filenames) {
-                logger.info("Received ============ {} file(s) for Removing",filename);
                 String filePath = uploadFolderPath + File.separator + filename;
 
                 File file = new File(filePath);
 
                 if (file.exists()) {
                     if (file.delete()) {
-                        logger.info("File deleted successfully============== " + filename);
+                        logger.info("File deleted successfully:  " + filename);
                     } else {
                         logger.info("Failed to delete file: " + filename);
                     }
