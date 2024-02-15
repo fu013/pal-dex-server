@@ -1,9 +1,13 @@
 package dir.group.paldexserver.entity;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "review")
 public class ReviewEntity {
 

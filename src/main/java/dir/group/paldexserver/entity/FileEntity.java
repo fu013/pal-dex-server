@@ -1,10 +1,14 @@
 package dir.group.paldexserver.entity;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "file")
 public class FileEntity {
 

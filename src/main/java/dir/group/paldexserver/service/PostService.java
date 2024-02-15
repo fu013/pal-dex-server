@@ -32,7 +32,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class PostService {
 
-    @Value("/home/sclee-blog-server/uploads") // 임시 이미지 경로
+    // /home/sclee-blog-server/uploads
+    // ${user.dir}/uploads
+    @Value("${user.dir}/uploads") // 임시 이미지 경로
     private String uploadPath;
 
     private final PostRepository postRepository;
@@ -57,27 +59,45 @@ public class PostService {
             String description = postDTO.getDescription();
             String tags = postDTO.getTags();
             String imageArr = postDTO.getImageArr();
-            PostEntity postEntity = new PostEntity(title,html,markdown,description,tags);
+
+            Optional<PostEntity> existingPostOptional = postRepository.findByTitle(title);
+            PostEntity postEntity;
+
+            if (existingPostOptional.isPresent()) {
+                postEntity = existingPostOptional.get();
+                postEntity.setHtml(html);
+                postEntity.setMarkdown(markdown);
+                postEntity.setDescription(description);
+                postEntity.setTags(tags);
+            } else {
+                postEntity = new PostEntity(title, html, markdown, description, tags);
+            }
+
             postRepository.save(postEntity);
             Long generatedPK = postEntity.getPk();
 
-
             ObjectMapper objectMapper = new ObjectMapper();
-            ImgBean[] imgBean =
-                    objectMapper.readValue(imageArr, ImgBean[].class);
+            ImgBean[] imgBean = objectMapper.readValue(imageArr, ImgBean[].class);
 
             for (ImgBean obj : imgBean) {
-                String dirImagePath =
-                        uploadPath + "/" + obj.getUrl();
+                String dirImagePath = uploadPath + "/" + obj.getUrl();
                 Path filePath = Path.of(dirImagePath);
+
                 if (Files.exists(filePath) && generatedPK > 0) {
                     long size = Files.size(filePath);
                     String ext = getFileExtension(dirImagePath);
-                    FileEntity fileEntity =
-                            new FileEntity("post",
-                                    generatedPK,
-                                    dirImagePath, ext,
-                                    size, obj.getIsThumbnail());
+
+                    Optional<FileEntity> existingFileOptional = fileRepository.findByPath(dirImagePath);
+                    FileEntity fileEntity;
+
+                    if (existingFileOptional.isPresent()) {
+                        fileEntity = existingFileOptional.get();
+                        fileEntity.setSize(size);
+                        fileEntity.setIs_thumb(obj.getIsThumbnail());
+                    } else {
+                        fileEntity = new FileEntity("post", generatedPK, dirImagePath, ext, size, obj.getIsThumbnail());
+                    }
+
                     fileRepository.save(fileEntity);
                 } else {
                     throw new IOException("File not found: " + dirImagePath);
@@ -88,6 +108,7 @@ public class PostService {
             throw new IOException("Error processing file: " + e.getMessage());
         }
     }
+
 
     private static String getFileExtension(String fileName) {
         int lastDotIndex = fileName.lastIndexOf('.');
@@ -119,8 +140,6 @@ public class PostService {
     @Transactional
     public ResponseEntity<List<PostWithFilePathProjection>> getAllPosts() {
         List<PostWithFilePathProjection> posts = postRepository.findAllPosts();
-        logger.info("log upload path2: {}", uploadPath);
-	logger.info("log posts: {}", posts);
         if (!posts.isEmpty()) {
             return ResponseEntity.ok(posts);
         } else {
@@ -129,7 +148,6 @@ public class PostService {
     }
     public List<String> storeFiles(List<MultipartFile> files) throws Exception {
         List<String> fileNames = new ArrayList<>();
-        logger.info("log files: {}", files);
         for (MultipartFile file : files) {
             String originalFilename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
             String fileName = generateUniqueFileName(originalFilename);
