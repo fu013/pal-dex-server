@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-    @Value("file:${user.dir}/uploads") // 임시 이미지 경로
+    @Value("file:/home/sclee-blog-server/uploads") // 임시 이미지 경로
     private String uploadPath;
     @Override
     public void addCorsMappings(CorsRegistry registry) {

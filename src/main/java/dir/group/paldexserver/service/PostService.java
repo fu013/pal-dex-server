@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class PostService {
 
-    @Value("${user.dir}/uploads") // 임시 이미지 경로
+    @Value("/home/sclee-blog-server/uploads") // 임시 이미지 경로
     private String uploadPath;
 
     private final PostRepository postRepository;
@@ -119,7 +119,7 @@ public class PostService {
     @Transactional
     public ResponseEntity<List<PostWithFilePathProjection>> getAllPosts() {
         List<PostWithFilePathProjection> posts = postRepository.findAllPosts();
-        logger.info("log upload path: {}", uploadPath);
+        logger.info("log upload path2: {}", uploadPath);
 	logger.info("log posts: {}", posts);
         if (!posts.isEmpty()) {
             return ResponseEntity.ok(posts);

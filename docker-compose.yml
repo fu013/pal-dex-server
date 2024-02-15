@@ -11,7 +11,7 @@ services:
     ports:
       - "6000:3306"
     volumes:
-      - ./mysql/conf.d:/etc/mysql/conf.d # MySQL 설정 파일 위치
+      - ./mysql:/etc/mysql # MySQL 설정 파일 위치
     command: ["--character-set-server=utf8mb4","--collation-server=utf8mb4_unicode_ci"]
     networks:
       - sclee_network
@@ -34,6 +34,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: "tmdcks2416@"
     depends_on:
       - database
+    volumes:
+      - ./uploads:/home/sclee-blog-server-uploads
     networks:
       - sclee_network
 networks:
