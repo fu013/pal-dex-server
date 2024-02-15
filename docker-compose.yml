@@ -11,7 +11,10 @@ services:
     ports:
       - "6000:3306"
     volumes:
-      - ./mysql:/etc/mysql # MySQL 설정 파일 위치
+      - "./db/conf.d:/etc/mysql/conf.d"
+      - "./db/data:/var/lib/mysql"
+      - "./db/initdb.d:/docker-entrypoint-initdb.d"
+      - "./data:/data"
     command: ["--character-set-server=utf8mb4","--collation-server=utf8mb4_unicode_ci"]
     networks:
       - sclee_network
@@ -35,7 +38,7 @@ services:
     depends_on:
       - database
     volumes:
-      - ./uploads:/home/sclee-blog-server-uploads
+      - ./uploads:/home/sclee-blog-server/uploads
     networks:
       - sclee_network
 networks:
