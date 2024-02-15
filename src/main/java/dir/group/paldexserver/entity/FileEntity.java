@@ -19,8 +19,8 @@ public class FileEntity {
     @Column(name = "t_name")
     private String t_name;
 
-    @Column(name = "t_pk")
-    private Long t_pk;
+    @Column(name = "tpk")
+    private Long tpk;
 
     @Column(name = "path", nullable = false)
     private String path;
@@ -46,9 +46,9 @@ public class FileEntity {
 
     public FileEntity() {}
     @Builder
-    public FileEntity(String t_name,Long t_pk,String path,String ext,long size,String is_thumb) {
+    public FileEntity(String t_name,Long tpk,String path,String ext,long size,String is_thumb) {
         this.t_name = t_name;
-        this.t_pk = t_pk;
+        this.tpk = tpk;
         this.path = path;
         this.ext = ext;
         this.size = size;

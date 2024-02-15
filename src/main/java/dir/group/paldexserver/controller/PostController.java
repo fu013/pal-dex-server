@@ -60,6 +60,18 @@ public class PostController {
         }
     }
 
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
+        try {
+            // Your logic to delete the post with the given postId
+            postService.deletePostWithFiles(postId);
+            return ResponseEntity.ok("Post deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error deleting post: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/addImage")
     public ResponseEntity<List<String>> addImage(@RequestParam("img") List<MultipartFile> files) {
         try {

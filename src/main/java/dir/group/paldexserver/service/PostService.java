@@ -36,15 +36,20 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final FileRepository fileRepository;
+    private final FileService fileService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final Environment env;
 
     @Autowired
-    public PostService(PostRepository postRepository, FileRepository fileRepository, Environment env) {
+    public PostService(PostRepository postRepository,
+                       FileRepository fileRepository,
+                       Environment env,
+                       FileService fileService) {
         this.postRepository = postRepository;
         this.fileRepository = fileRepository;
         this.env = env;
+        this.fileService = fileService;
     }
 
     @Transactional
@@ -172,5 +177,24 @@ public class PostService {
             String timestamp = String.valueOf(Instant.now().toEpochMilli());
             String randomPart = UUID.randomUUID().toString().substring(0, 8);
             return timestamp + "_" + randomPart + "_" + originalFilename;
+    }
+
+    @Transactional
+    public void deletePostWithFiles(Long postId) {
+        // Find the post by its ID
+        Optional<PostEntity> postOptional = postRepository.findById(postId);
+
+        if (postOptional.isPresent()) {
+            PostEntity postEntity = postOptional.get();
+
+            // Delete associated files
+            fileService.deleteFilesByPostId(postId);
+
+            // Delete the post
+            postRepository.delete(postEntity);
+        } else {
+            // Handle the case where the post with the given ID is not found
+            throw new RuntimeException("Post not found with ID: " + postId);
+        }
     }
 }
