@@ -88,18 +88,16 @@ public class PostService {
                 if (Files.exists(filePath) && generatedPK > 0) {
                     long size = Files.size(filePath);
                     String ext = getFileExtension(dirImagePath);
-
-                    Optional<FileEntity> existingFileOptional = fileRepository.findByPath(dirImagePath);
+                    String isThumbnail = obj.getIsThumbnail();
+                    Optional<FileEntity> existingFileOptional = fileRepository.findByTpkAndIsThumb(generatedPK, isThumbnail);
                     FileEntity fileEntity;
 
                     if (existingFileOptional.isPresent()) {
                         fileEntity = existingFileOptional.get();
                         fileEntity.setSize(size);
-                        fileEntity.setIs_thumb(obj.getIsThumbnail());
                     } else {
-                        fileEntity = new FileEntity("post", generatedPK, dirImagePath, ext, size, obj.getIsThumbnail());
+                        fileEntity = new FileEntity("post", generatedPK, dirImagePath, ext, size, isThumbnail);
                     }
-
                     fileRepository.save(fileEntity);
                 } else {
                     throw new IOException("File not found: " + dirImagePath);
@@ -181,19 +179,15 @@ public class PostService {
 
     @Transactional
     public void deletePostWithFiles(Long postId) {
-        // Find the post by its ID
         Optional<PostEntity> postOptional = postRepository.findById(postId);
 
         if (postOptional.isPresent()) {
             PostEntity postEntity = postOptional.get();
 
-            // Delete associated files
             fileService.deleteFilesByPostId(postId);
 
-            // Delete the post
             postRepository.delete(postEntity);
         } else {
-            // Handle the case where the post with the given ID is not found
             throw new RuntimeException("Post not found with ID: " + postId);
         }
     }

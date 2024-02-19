@@ -10,4 +10,6 @@ public interface FileRepository extends JpaRepository<FileEntity, Long> {
     Optional<FileEntity> findByPath(String dirImagePath);
 
     List<FileEntity> findByTpk(Long t_pk);
+
+    Optional<FileEntity> findByTpkAndIsThumb(Long t_pk, String is_thumb);
 }

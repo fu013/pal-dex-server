@@ -1,4 +1,5 @@
 package dir.group.paldexserver.entity;
+
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,9 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "file")
+@Table(name = "file", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"tpk", "is_thumb"})
+})
 public class FileEntity {
 
     @Id
@@ -31,8 +34,8 @@ public class FileEntity {
     @Column(name = "size", nullable = false)
     private long size;
 
-    @Column(name = "is_thumb", length = 1)
-    private String is_thumb;
+    @Column(name = "isThumb", length = 1)
+    private String isThumb;
 
     @Column(name = "comment")
     private String comment;
@@ -43,16 +46,16 @@ public class FileEntity {
     @Column(name = "created_date", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdDate;
 
-
     public FileEntity() {}
+
     @Builder
-    public FileEntity(String t_name,Long tpk,String path,String ext,long size,String is_thumb) {
+    public FileEntity(String t_name, Long tpk, String path, String ext, long size, String isThumb) {
         this.t_name = t_name;
         this.tpk = tpk;
         this.path = path;
         this.ext = ext;
         this.size = size;
-        this.is_thumb = is_thumb;
+        this.isThumb = isThumb;
         this.updatedDate = LocalDateTime.now();
         this.createdDate = LocalDateTime.now();
     }
