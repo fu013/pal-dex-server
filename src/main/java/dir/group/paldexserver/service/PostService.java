@@ -10,6 +10,9 @@ import dir.group.paldexserver.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -138,14 +141,17 @@ public class PostService {
         }
     }
     @Transactional
-    public ResponseEntity<List<PostWithFilePathProjection>> getAllPosts() {
-        List<PostWithFilePathProjection> posts = postRepository.findAllPosts();
-        if (!posts.isEmpty()) {
-            return ResponseEntity.ok(posts);
+    public ResponseEntity<Object> getAllPosts(int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<PostWithFilePathProjection> postsPage = postRepository.findAllPosts(pageable);
+
+        if (!postsPage.isEmpty()) {
+            return ResponseEntity.ok(postsPage);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
     public List<String> storeFiles(List<MultipartFile> files) throws Exception {
         List<String> fileNames = new ArrayList<>();
         for (MultipartFile file : files) {
@@ -190,5 +196,10 @@ public class PostService {
         } else {
             throw new RuntimeException("Post not found with ID: " + postId);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public long getTotalPostCount() {
+        return postRepository.count();
     }
 }

@@ -46,8 +46,16 @@ public class PostController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<PostWithFilePathProjection>> getAllPost() {
-        return postService.getAllPosts();
+    public ResponseEntity<Object> getAllPosts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return postService.getAllPosts(page, size);
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> getTotalPostCount() {
+        long totalPostCount = postService.getTotalPostCount();
+        return ResponseEntity.ok(totalPostCount);
     }
 
     @PostMapping("/set")
