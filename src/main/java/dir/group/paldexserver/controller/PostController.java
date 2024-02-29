@@ -41,8 +41,11 @@ public class PostController {
     }
 
     @GetMapping("/tag")
-    public ResponseEntity<List<PostWithFilePathProjection>> getPostsByTag(@RequestParam("id") String tag) {
-        return postService.getPostsByTag(tag);
+    public ResponseEntity<Object> getPostsByTag(
+            @RequestParam("id") String tag,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return postService.getPostsByTag(tag, page, size);
     }
 
     @GetMapping("/all")

@@ -28,8 +28,6 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
             "FROM post p LEFT JOIN file f ON p.pk = f.tpk AND f.t_name = 'post' AND f.is_thumb = '1' " +
             "WHERE FIND_IN_SET(:tag, REPLACE(p.tags, ', ', ',')) > 0",
             nativeQuery = true)
-    List<PostWithFilePathProjection> findByTag(@Param("tag") String tag);
-
-
+    Page<PostWithFilePathProjection> findByTag(@Param("tag") String tag, Pageable pageable);
     Optional<PostEntity> findByTitle(String title);
 }

@@ -131,15 +131,18 @@ public class PostService {
             return ResponseEntity.notFound().build();
         }
     }
+
     @Transactional
-    public ResponseEntity<List<PostWithFilePathProjection>> getPostsByTag(String tag) {
-        List<PostWithFilePathProjection> postList = postRepository.findByTag(tag);
-        if (!postList.isEmpty()) {
-            return ResponseEntity.ok(postList);
+    public ResponseEntity<Object> getPostsByTag(String tag, int page, int size) {
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<PostWithFilePathProjection> postsPage = postRepository.findByTag(tag, pageable);
+        if (!postsPage.isEmpty()) {
+            return ResponseEntity.ok(postsPage);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
     @Transactional
     public ResponseEntity<Object> getAllPosts(int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
